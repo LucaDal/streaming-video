@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="StreamingVideo.Common/StreamingVideo.Common.csproj" Id="488ea7cb-d3bd-4c36-af98-493480025662" />
+  <Project Path="StreamingVideo.Server/StreamingVideo.Server.csproj" />
+  <Project Path="StreamingVideo.Client/StreamingVideo.Client.csproj" Id="ccc36a94-b36d-443e-9d17-55c0218ca822" />
+</Solution>
