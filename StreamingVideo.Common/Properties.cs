@@ -27,7 +27,6 @@ namespace StreamingVideo.Common {
                 return toRet;
             try {
                 string readText = File.ReadAllText(path);
-                toRet.FilePath = path;
 
                 var prop = JsonSerializer.Deserialize<Properties>(readText);
 

@@ -1,39 +1,29 @@
 ﻿using Microsoft.Win32;
 using StreamingVideo.Common;
-using System.IO;
 using System.Net;
-using System.Net.Sockets;
-using System.Reflection;
-using System.Security.Cryptography;
-using System.Text;
-using System.Text.RegularExpressions;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using Path = System.IO.Path;
 
-namespace StreamingVideo {
+
+namespace StreamingVideo.Server {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window {
 
-        private SimpleVideoServer _server;
-
+        private readonly SimpleVideoServer _server;
+        private readonly MyStreamingSocket SocketServer = new MyStreamingSocket();
         public MainWindow() {
             InitializeComponent();
             _server = new SimpleVideoServer();
             StatusText.Text = "Start Server";
-            Task.Run(() => {
-                AsynchronousSocketListener.StartSocket(SocketTypes.Server, new IPAddress([127, 0, 0, 1]));
-            });
+            SocketServer.StartSocket(SocketTypes.Server, new IPAddress([127, 0, 0, 1]));
+            Closing += MainWindow_Closing;
         }
+
+        private void MainWindow_Closing(object? sender, System.ComponentModel.CancelEventArgs e) {
+            SocketServer.Dispose();
+        }
+
         private void StartServer_Click(object sender, RoutedEventArgs e) {
             try {
                 _server.SetPathVideo(Properties.Instance.FilePath);

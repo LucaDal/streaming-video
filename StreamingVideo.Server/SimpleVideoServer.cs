@@ -6,7 +6,7 @@ using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace StreamingVideo {
+namespace StreamingVideo.Server {
     internal class SimpleVideoServer {
 
         private HttpListener _listener = new HttpListener();

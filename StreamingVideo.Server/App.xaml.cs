@@ -2,7 +2,7 @@
 using System.Data;
 using System.Windows;
 
-namespace StreamingVideo
+namespace StreamingVideo.Server
 {
     /// <summary>
     /// Interaction logic for App.xaml

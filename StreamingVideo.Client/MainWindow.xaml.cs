@@ -17,7 +17,7 @@ using System.Windows.Shapes;
 using System.Windows.Threading;
 using Wpf.Ui.Controls;
 
-namespace StreamingVideo_Client {
+namespace StreamingVideo.Client {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
@@ -28,11 +28,13 @@ namespace StreamingVideo_Client {
         private WindowStyle prevStyle;
         private ResizeMode prevResize;
         DispatcherTimer timer = new DispatcherTimer();
+        MyStreamingSocket Client = new MyStreamingSocket();
         public MainWindow() {
             InitializeComponent();
 
-            AsynchronousSocketListener.StartSocket(SocketTypes.Client, new IPAddress([127, 0, 0, 1]));
-            AsynchronousSocketListener.CommandRecived += CommandRecived;
+            Closing += MainWindow_Closing;
+            Client.StartSocket(SocketTypes.Client, new IPAddress([127, 0, 0, 1]));
+            Client.CommandRecived += CommandRecived;
 
             VideoPlayer.Source = new Uri($"https://lucadalessandromira.freeddns.org:8080/");
             VideoPlayer.BufferingStarted += VideoPlayer_BufferingStarted;
@@ -41,6 +43,10 @@ namespace StreamingVideo_Client {
             timer.Interval = TimeSpan.FromMilliseconds(1000); // aggiorna ogni mezzo secondo
             timer.Tick += Timer_Tick;
             timer.Start();
+        }
+
+        private void MainWindow_Closing(object? sender, System.ComponentModel.CancelEventArgs e) {
+            Client.Dispose();
         }
 
         private void Timer_Tick(object? sender, EventArgs e) {
@@ -96,28 +102,22 @@ namespace StreamingVideo_Client {
             }
         }
         private async void BtnPlay_Click(object sender, RoutedEventArgs e) { 
-            AsynchronousSocketListener.SendCmd(CommandType.Play); 
+            Client.SendCommand(CommandType.Play, timelineSlider.Value); 
             VideoPlayer.Play();
         }
         private async void BtnPause_Click(object sender, RoutedEventArgs e) {
-            AsynchronousSocketListener.SendCmd(CommandType.Pause);
+            Client.SendCommand(CommandType.Pause, timelineSlider.Value);
             VideoPlayer.Pause();
         }
         private async void BtnStop_Click(object sender, RoutedEventArgs e) {
-            AsynchronousSocketListener.SendCmd(CommandType.Stop);
+           // Client.SendCommand(CommandType.Stop);
             VideoPlayer?.Stop();
-            AsynchronousSocketListener.SendCmd(CommandType.Seek, 0);
+            Client.SendCommand(CommandType.Seek, timelineSlider.Value);
         }
         private void commands_MouseEnter(object sender, MouseEventArgs e) {
-            //commands.Visibility = Visibility.Visible;
-            //volumeSlider.Visibility = Visibility.Visible;
-            //timelineSlider.Visibility = Visibility.Visible;
             controls.Visibility = Visibility.Visible;
         }
         private void commands_MouseLeave(object sender, MouseEventArgs e) {
-            //volumeSlider.Visibility = Visibility.Hidden;
-            //timelineSlider.Visibility = Visibility.Hidden;
-            //commands.Visibility = Visibility.Hidden;
             controls.Visibility = Visibility.Hidden;
         }
         private void ChangeMediaVolume(object sender, RoutedPropertyChangedEventArgs<double> args) {
@@ -125,8 +125,7 @@ namespace StreamingVideo_Client {
         }
         private void timelineSlider_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e) {
             Dispatcher.BeginInvoke(new Action(() => {
-                var seekTime = timelineSlider.Value;
-                AsynchronousSocketListener.SendCmd(CommandType.Seek, seekTime);
+                Client.SendCommand(CommandType.Seek, timelineSlider.Value);
             }));
         }
     }

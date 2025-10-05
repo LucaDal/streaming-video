@@ -5,7 +5,7 @@ using System.IO;
 using System.Net;
 using System.Text;
 
-namespace StreamingVideo {
+namespace StreamingVideo.Server {
     class DynuDns {
         private const string BaseUrl = "https://update.dyndns.it/nic/update?";
         /// <summary>
