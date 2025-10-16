@@ -12,7 +12,7 @@ namespace StreamingVideo.Server {
         private HttpListener _listener = new HttpListener();
         public string? FilePath { get; set; }
         public void Start(int port) {
-            string prefix = $"https://+:{port}/";
+            string prefix = $"https://+:{8080}/";
             _listener.Prefixes.Add(prefix);
             _listener.Start();
             Debug.WriteLine($"Server avviato su {prefix}");
@@ -66,7 +66,7 @@ namespace StreamingVideo.Server {
                     resp.AddHeader("Content-Range", $"bytes {start}-{end}/{totalSize}");
                 }
 
-                resp.ContentType = "video/mp4";
+                resp.ContentType = "video/"+fileInfo.Extension.Replace(".","");
                 resp.AddHeader("Accept-Ranges", "bytes");
 
                 using var fs = new FileStream(FilePath, FileMode.Open, FileAccess.Read, FileShare.Read);

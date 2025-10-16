@@ -113,7 +113,6 @@ namespace StreamingVideo.Common {
         /// <param name="json"></param>
         private void HandleMessage(string json) {
             try {
-                Debug.WriteLine(json);
                 var cmd = JsonSerializer.Deserialize<Command>(json);
                 if (cmd == null)
                     return;

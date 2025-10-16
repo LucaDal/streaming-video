@@ -15,6 +15,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using Unosquare.FFME;
 using Wpf.Ui.Controls;
 
 namespace StreamingVideo.Client {
@@ -50,8 +51,8 @@ namespace StreamingVideo.Client {
         }
 
         private void Timer_Tick(object? sender, EventArgs e) {
-            if (VideoPlayer.NaturalDuration.HasTimeSpan) {
-                timelineSlider.Value = VideoPlayer.Position.TotalMilliseconds;
+           if (VideoPlayer.NaturalDuration.HasTimeSpan) {
+             timelineSlider.Value = VideoPlayer.Position.TotalMilliseconds;
             }
         }
         private void VideoPlayer_BufferingStarted(object sender, RoutedEventArgs e) {
@@ -110,15 +111,15 @@ namespace StreamingVideo.Client {
             VideoPlayer.Pause();
         }
         private async void BtnStop_Click(object sender, RoutedEventArgs e) {
-           // Client.SendCommand(CommandType.Stop);
+            Client.SendCommand(CommandType.Stop);
             VideoPlayer?.Stop();
             Client.SendCommand(CommandType.Seek, timelineSlider.Value);
         }
         private void commands_MouseEnter(object sender, MouseEventArgs e) {
-            controls.Visibility = Visibility.Visible;
+           controls.Visibility = Visibility.Visible;
         }
         private void commands_MouseLeave(object sender, MouseEventArgs e) {
-            controls.Visibility = Visibility.Hidden;
+           controls.Visibility = Visibility.Hidden;
         }
         private void ChangeMediaVolume(object sender, RoutedPropertyChangedEventArgs<double> args) {
             VideoPlayer.Volume = (double)volumeSlider.Value;

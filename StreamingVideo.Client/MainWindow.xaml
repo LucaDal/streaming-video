@@ -13,13 +13,11 @@
         Width="800" Name="class">
 
     <Grid Background="#2d2d30" Margin="5">
-
         <MediaElement x:Name="VideoPlayer"
                       LoadedBehavior="Manual"
                       UnloadedBehavior="Manual"
                       Stretch="Uniform"/>
 
-        <!-- Controlli -->
         <Grid MouseEnter="commands_MouseEnter"
               MouseLeave="commands_MouseLeave"
               VerticalAlignment="Bottom"

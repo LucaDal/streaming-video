@@ -3,37 +3,29 @@ using System.Buffers.Text;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
+using System.Net.Http;
 using System.Text;
 
 namespace StreamingVideo.Server {
     class DynuDns {
-        private const string BaseUrl = "https://update.dyndns.it/nic/update?";
-        /// <summary>
-        /// Call this from another class to update a zone.
-        /// </summary>
-        /// <param name="host">The full name of the host</param>
-        /// <returns></returns>
+        private const string BaseUrl = "https://api.dynu.com/nic/update?";
         public static string Update(String host, string username, string password) {
-            string url = BuildUrl(host);
-            return PerformUpdate(url, username, password);
+            string resp = null;
+            try {
+                string url = BuildUrl(host, username, password);
+                HttpClient client = new HttpClient();
+                HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, url);
+                var response = client.Send(request);
+                resp = response.Content.ReadAsStringAsync().Result;
+            }
+            catch (Exception ex) {
+                resp = ex.Message;
+            }
+            return resp;
         }
 
-        private static string BuildUrl(String hostname) {
-            return BaseUrl + "hostname=" + hostname;
-        }
-        /// <summary>
-        /// Performs the actual request to the dyndns server to update the entity
-        /// </summary>
-        /// <param name="url">url to post</param>
-        private static string PerformUpdate(String url, string username, string password) {
-            HttpWebRequest request = WebRequest.Create(url) as HttpWebRequest;
-            NetworkCredential creds = new NetworkCredential(username, password);
-            request.Credentials = creds;
-            request.Method = "GET";
-            HttpWebResponse response = request.GetResponse() as HttpWebResponse;
-            Stream reply = response.GetResponseStream();
-            StreamReader readReply = new StreamReader(reply);
-            return readReply.ReadToEnd();
+        private static string BuildUrl(string hostname, string username, string password) {
+            return $"{BaseUrl}hostname={hostname}&username={username}&password={password}";
         }
     }
 }
